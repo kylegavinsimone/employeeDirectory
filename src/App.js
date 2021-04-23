@@ -1,41 +1,59 @@
-import React, { Component } from "react";
-import FriendCard from "./components/FriendCard";
+import React, { useState, useEffect } from "react";
+import API from "./utils/API";
 import Wrapper from "./components/Wrapper";
 import Title from "./components/Title";
-import friends from "./friends.json";
 
-class App extends Component {
-  // Setting this.state.friends to the friends json array
-  state = {
-    friends
+function App() {
+  // Setting this.state.employees to the employees json array
+  const [employees, setEmployees] = useState([]);
+  const [search, setSearch] = useState("");
+  useEffect(() => {
+    API.getUsers().then(function (employeeData) {
+      console.log(employeeData);
+      setEmployees(employeeData.data.results);
+    });
+  }, []);
+
+  const removeEmployee = (employee) => {
+    let fullName = (employee.name.first + " " + employee.name.last).toLowerCase();
+    return fullName.includes(search.toLowerCase());
   };
-
-  removeFriend = id => {
-    // Filter this.state.friends for friends with an id not equal to the id being removed
-    const friends = this.state.friends.filter(friend => friend.id !== id);
-    // Set this.state.friends equal to the new friends array
-    this.setState({ friends });
-  };
-
-  // Map over this.state.friends and render a FriendCard component for each friend object
-  render() {
-    return (
+const sortEmployee = () => {
+  
+}
+  // Map over this.state.employees and render a employeeCard component for each employee object
+  return (
+    <>
+      <Title>Employee List</Title>
+      <input value={search} onChange={(e) => setSearch(e.target.value)}></input>
       <Wrapper>
-        <Title>Friends List</Title>
-        {this.state.friends.map(friend => (
-          <FriendCard
-            removeFriend={this.removeFriend}
-            id={friend.id}
-            key={friend.id}
-            name={friend.name}
-            image={friend.image}
-            occupation={friend.occupation}
-            location={friend.location}
-          />
-        ))}
+        {employees
+          .filter((emp) => removeEmployee(emp))
+          .map((employee) => (
+            <div>
+              <img
+                src={employee.picture.large}
+                alt={employee.picture.large}
+              ></img>
+              <h1>
+                {employee.name.first} {employee.name.last}
+              </h1>
+              <h1>{employee.email}</h1>
+              <h1>{employee.phone}</h1>
+              {/* <employeeCard
+            removeemployee={removeemployee}
+            id={employee.id}
+            key={employee.id}
+            name={employee.name}
+            image={employee.image}
+            occupation={employee.occupation}
+            location={employee.location}
+          /> */}
+            </div>
+          ))}
       </Wrapper>
-    );
-  }
+    </>
+  );
 }
 
 export default App;

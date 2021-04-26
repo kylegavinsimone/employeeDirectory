@@ -19,13 +19,16 @@ function App() {
     return fullName.includes(search.toLowerCase());
   };
 const sortEmployee = () => {
-  
+  const newEmployees = employees.map (a => a);
+  newEmployees.sort((b,a) => a.dob.age - b.dob.age)
+  setEmployees(newEmployees)
 }
   // Map over this.state.employees and render a employeeCard component for each employee object
   return (
     <>
       <Title>Employee List</Title>
       <input value={search} onChange={(e) => setSearch(e.target.value)}></input>
+      <button onClick = {sortEmployee}>Sort by age</button>
       <Wrapper>
         {employees
           .filter((emp) => removeEmployee(emp))
@@ -38,6 +41,7 @@ const sortEmployee = () => {
               <h1>
                 {employee.name.first} {employee.name.last}
               </h1>
+              <h1>{employee.dob.age}</h1>
               <h1>{employee.email}</h1>
               <h1>{employee.phone}</h1>
               {/* <employeeCard
